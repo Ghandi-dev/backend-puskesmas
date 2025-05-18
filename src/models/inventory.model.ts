@@ -25,7 +25,7 @@ const InventorySchema = new Schema<Inventory>({
 	year: { type: Schema.Types.Number, required: true },
 	quantity: { type: Schema.Types.Number, required: true },
 	condition: { type: Schema.Types.String, enum: ["good", "fair", "damaged"], required: true },
-	mutationRemarks: { type: Schema.Types.String, required: true },
+	mutationRemarks: { type: Schema.Types.String },
 	room: { type: Schema.Types.ObjectId, ref: "Room" },
 	vehicle_details: {
 		type: VehicleDetailSchema,
