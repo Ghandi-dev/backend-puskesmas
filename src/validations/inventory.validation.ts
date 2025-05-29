@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { room } from "./room.validation";
+import { ObjectId } from "mongoose";
 
 export const vehicleDetailSchema = yup.object().shape({
 	chassis_number: yup.string().required("Chassis number is required"),
@@ -17,7 +17,7 @@ export const inventorySchema = yup.object().shape({
 	quantity: yup.number().min(1, "Quantity must be at least 1").required("Quantity is required"),
 	condition: yup.string().oneOf(["good", "fair", "damaged"]).required("Condition is required"),
 	mutationRemarks: yup.string().optional(),
-	room: room,
+	room: yup.string().required(),
 	image: yup.string().required("Image is required"),
 
 	vehicle_details: yup.mixed().when("type", {
@@ -27,4 +27,8 @@ export const inventorySchema = yup.object().shape({
 	}),
 });
 
-export type Inventory = yup.InferType<typeof inventorySchema>;
+type InventoryType = yup.InferType<typeof inventorySchema>;
+
+export type Inventory = Omit<InventoryType, "room"> & {
+	room: ObjectId;
+};
