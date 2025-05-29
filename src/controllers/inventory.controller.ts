@@ -7,7 +7,7 @@ import { inventorySchema } from "../validations/inventory.validation";
 const create = async (req: IReqUser, res: Response) => {
 	try {
 		const inventory = req.body;
-		inventorySchema.validate(inventory);
+		await inventorySchema.validate(inventory);
 		const result = await InventoryModel.create(inventory);
 
 		response.success(res, result, "success create inventory");
@@ -37,7 +37,7 @@ const getAll = async (req: Request, res: Response) => {
 		if (year) {
 			Object.assign(query, { year });
 		}
-        
+
 		const result = await InventoryModel.find(query)
 			.limit(limit)
 			.skip((page - 1) * limit)

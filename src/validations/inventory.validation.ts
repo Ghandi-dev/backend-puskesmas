@@ -18,6 +18,7 @@ export const inventorySchema = yup.object().shape({
 	condition: yup.string().oneOf(["good", "fair", "damaged"]).required("Condition is required"),
 	mutationRemarks: yup.string().optional(),
 	room: room,
+	image: yup.string().required("Image is required"),
 
 	vehicle_details: yup.mixed().when("type", {
 		is: "vehicle",
