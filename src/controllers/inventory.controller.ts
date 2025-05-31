@@ -16,42 +16,77 @@ const create = async (req: IReqUser, res: Response) => {
 	}
 };
 
+const parseQueryArray = (value?: string | string[]) => {
+	if (!value) return undefined;
+	if (Array.isArray(value)) return value;
+	if (typeof value === "string" && value.includes(",")) {
+		return value.split(",");
+	}
+	return value;
+};
+
 const getAll = async (req: Request, res: Response) => {
-	const { page = 1, limit = 10, search, type, condition, room, year } = req.query as unknown as IPaginationQuery;
+	const { page = 1, limit = 10, search, type, condition, room, startYear, endYear } = req.query as unknown as IPaginationQuery;
+
 	try {
-		const query = {};
+		const query: any = {};
+
 		if (search) {
-			Object.assign(query, {
-				$or: [{ name: { $regex: search, $options: "i" } }],
-			});
+			Object.assign(query, { $or: [{ name: { $regex: search, $options: "i" } }] });
 		}
-		if (type) {
-			Object.assign(query, { type });
+
+		const parsedType = parseQueryArray(type);
+		if (parsedType) {
+			if (Array.isArray(parsedType)) {
+				Object.assign(query, { type: { $in: parsedType } });
+			} else {
+				Object.assign(query, { type: parsedType });
+			}
 		}
-		if (condition) {
-			Object.assign(query, { condition });
+
+		const parsedCondition = parseQueryArray(condition);
+		if (parsedCondition) {
+			if (Array.isArray(parsedCondition)) {
+				Object.assign(query, { condition: { $in: parsedCondition } });
+			} else {
+				Object.assign(query, { condition: parsedCondition });
+			}
 		}
-		if (room) {
-			Object.assign(query, { room });
+
+		const parsedRoom = parseQueryArray(room);
+		if (parsedRoom) {
+			if (Array.isArray(parsedRoom)) {
+				Object.assign(query, { room: { $in: parsedRoom } });
+			} else {
+				Object.assign(query, { room: parsedRoom });
+			}
 		}
-		if (year) {
-			Object.assign(query, { year });
+		const yearFilter: Record<string, number> = {};
+		if (startYear) {
+			yearFilter.$gte = Number(startYear);
+		}
+		if (endYear) {
+			yearFilter.$lte = Number(endYear);
+		}
+		if (Object.keys(yearFilter).length > 0) {
+			Object.assign(query, { year: yearFilter });
 		}
 
 		const result = await InventoryModel.find(query)
-			.limit(limit)
-			.skip((page - 1) * limit)
+			.limit(Number(limit))
+			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 })
 			.exec();
 
 		const count = await InventoryModel.countDocuments(query);
+
 		response.pagination(
 			res,
 			result,
 			{
 				total: count,
-				totalPages: Math.ceil(count / limit),
-				current: page,
+				totalPages: Math.ceil(count / Number(limit)),
+				current: Number(page),
 			},
 			"success get all inventory"
 		);

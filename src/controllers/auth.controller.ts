@@ -67,6 +67,7 @@ const register = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
 	try {
 		const { identifier, password } = req.body;
+
 		await userLoginDTO.validate({ identifier, password });
 		// ambil data user berdasarkan "identifier" -> email / username
 		const userByIdentifier = await UserModel.findOne({
@@ -92,7 +93,6 @@ const login = async (req: Request, res: Response) => {
 
 		response.success(res, token, "success login");
 	} catch (error) {
-		console.error("Error during login:", error);
 		response.error(res, error, "failed login");
 	}
 };

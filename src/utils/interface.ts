@@ -16,8 +16,10 @@ export interface IPaginationQuery {
 	search?: string;
 	type?: string;
 	condition?: string;
-	room?: Types.ObjectId;
+	room?: string;
 	year?: number;
+	startYear?: number;
+	endYear?: number;
 	date?: Date;
 	startDate?: Date;
 	endDate?: Date;

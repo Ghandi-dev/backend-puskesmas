@@ -17,10 +17,10 @@ const VehicleDetailSchema = new Schema(
 	{ _id: false }
 ); // tidak perlu _id untuk embedded object
 
-
 const InventorySchema = new Schema<Inventory>({
 	code: { type: Schema.Types.String, required: true },
 	name: { type: Schema.Types.String, required: true },
+	brand: { type: Schema.Types.String, required: true },
 	type: { type: Schema.Types.String, enum: ["medic", "non_medic", "vehicle"], required: true },
 	material: { type: Schema.Types.String, required: true },
 	year: { type: Schema.Types.Number, required: true },
