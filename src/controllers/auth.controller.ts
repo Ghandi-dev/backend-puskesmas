@@ -5,6 +5,7 @@ import { generateToken } from "../utils/jwt";
 import { IReqUser } from "../utils/interface";
 import response from "../utils/response";
 import { userDTO, userLoginDTO, userUpdatePasswordDTO } from "../validations/user.validation";
+import { ROLES } from "../utils/constant";
 
 const updateProfile = async (req: IReqUser, res: Response) => {
 	try {
@@ -97,4 +98,53 @@ const login = async (req: Request, res: Response) => {
 	}
 };
 
-export { updateProfile, updatePassword, me, register, login };
+const getAll = async (req: IReqUser, res: Response) => {
+	try {
+		const userId = req.user?.id;
+
+		const result = await UserModel.find({ _id: { $ne: userId } }); // exclude current user
+
+		response.success(res, result, "success get all user");
+	} catch (error) {
+		response.error(res, error, "failed get all user");
+	}
+};
+
+const updateRole = async (req: IReqUser, res: Response) => {
+	try {
+		const userId = req.params.id;
+
+		// Ambil user terlebih dahulu
+		const user = await UserModel.findById(userId);
+		if (!user) {
+			return response.notFound(res, "user not found");
+		}
+		if (user.username === "superadmin") {
+			return response.unauthorized(res, "cannot update role superadmin");
+		}
+
+		// Toggle role dengan ternary
+		const newRole = user.role === ROLES.ADMIN ? ROLES.SUPERADMIN : ROLES.ADMIN;
+
+		const result = await UserModel.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+
+		response.success(res, result, "success update role user");
+	} catch (error) {
+		response.error(res, error, "failed update role user");
+	}
+};
+
+const deleteUser = async (req: IReqUser, res: Response) => {
+	try {
+		const userId = req.params.id;
+		const result = await UserModel.findByIdAndDelete(userId);
+		if (!result) {
+			return response.notFound(res, "user not found");
+		}
+		response.success(res, result, "success delete user");
+	} catch (error) {
+		response.error(res, error, "failed delete user");
+	}
+};
+
+export { updateProfile, updatePassword, me, register, login, updateRole, deleteUser, getAll };

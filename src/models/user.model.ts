@@ -25,7 +25,7 @@ const UserSchema = new Schema<User>(
 		email: { type: Schema.Types.String, required: true, unique: true },
 		password: { type: Schema.Types.String, required: true },
 		role: { type: Schema.Types.String, enum: [ROLES.SUPERADMIN, ROLES.ADMIN], default: ROLES.ADMIN, required: true },
-		profilePicture: { type: Schema.Types.String, default: "user.jpg" },
+		profilePicture: { type: Schema.Types.String, default: "https://res.cloudinary.com/diton4fcf/image/upload/v1748747495/puskesmas_rpraom.svg" },
 		isActive: { type: Schema.Types.Boolean, default: false },
 	},
 	{ timestamps: true }

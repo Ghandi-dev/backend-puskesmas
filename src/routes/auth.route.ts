@@ -76,4 +76,10 @@ router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.ADMIN])
      */
 router.put("/auth/update-password", [authMiddleware, aclMiddleware([ROLES.ADMIN])], authController.updatePassword);
 
+router.get("/auth/users", [authMiddleware, aclMiddleware([ROLES.SUPERADMIN])], authController.getAll);
+
+router.put("/auth/update-role/:id", [authMiddleware, aclMiddleware([ROLES.SUPERADMIN])], authController.updateRole);
+
+router.delete("/auth/user/:id", [authMiddleware, aclMiddleware([ROLES.SUPERADMIN])], authController.deleteUser);
+
 export default router;
