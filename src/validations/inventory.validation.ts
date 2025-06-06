@@ -30,10 +30,14 @@ export const inventorySchema = yup.object().shape({
 		then: () => vehicleDetailSchema.required(),
 		otherwise: () => yup.mixed().notRequired(),
 	}),
+	createdBy: yup.string().required("Created by is required"),
+	updatedBy: yup.string().required("Updated by is required"),
 });
 
 type InventoryType = yup.InferType<typeof inventorySchema>;
 
-export type Inventory = Omit<InventoryType, "room"> & {
+export type Inventory = Omit<InventoryType, "room" | "createdBy" | "updatedBy"> & {
 	room: ObjectId;
+	createdBy: ObjectId;
+	updatedBy: ObjectId;
 };

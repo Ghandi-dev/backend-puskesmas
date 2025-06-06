@@ -24,7 +24,7 @@ const UserSchema = new Schema<User>(
 		username: { type: Schema.Types.String, required: true, unique: true },
 		email: { type: Schema.Types.String, required: true, unique: true },
 		password: { type: Schema.Types.String, required: true },
-		role: { type: Schema.Types.String, enum: [ROLES.ADMIN, ROLES.MEMBER], default: ROLES.MEMBER, required: true },
+		role: { type: Schema.Types.String, enum: [ROLES.SUPERADMIN, ROLES.ADMIN], default: ROLES.ADMIN, required: true },
 		profilePicture: { type: Schema.Types.String, default: "user.jpg" },
 		isActive: { type: Schema.Types.Boolean, default: false },
 	},

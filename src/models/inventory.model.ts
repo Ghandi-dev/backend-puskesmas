@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Inventory } from "../validations/inventory.validation";
+import { timeStamp } from "console";
 
 const INVENTORY_MODEL_NAME = "Inventories";
 
@@ -17,25 +18,30 @@ const VehicleDetailSchema = new Schema(
 	{ _id: false }
 ); // tidak perlu _id untuk embedded object
 
-const InventorySchema = new Schema<Inventory>({
-	code: { type: Schema.Types.String, required: true },
-	name: { type: Schema.Types.String, required: true },
-	brand: { type: Schema.Types.String, required: true },
-	type: { type: Schema.Types.String, enum: ["medic", "non_medic", "vehicle"], required: true },
-	material: { type: Schema.Types.String, required: true },
-	year: { type: Schema.Types.Number, required: true },
-	quantity: { type: Schema.Types.Number, required: true },
-	condition: { type: Schema.Types.String, enum: ["good", "fair", "damaged"], required: true },
-	mutationRemarks: { type: Schema.Types.String },
-	room: { type: Schema.Types.ObjectId, ref: "Room" },
-	image: { type: Schema.Types.String, required: true },
-	vehicle_details: {
-		type: VehicleDetailSchema,
-		required: function () {
-			return this.type === "vehicle";
+const InventorySchema = new Schema<Inventory>(
+	{
+		code: { type: Schema.Types.String, required: true },
+		name: { type: Schema.Types.String, required: true },
+		brand: { type: Schema.Types.String, required: true },
+		type: { type: Schema.Types.String, enum: ["medic", "non_medic", "vehicle"], required: true },
+		material: { type: Schema.Types.String, required: true },
+		year: { type: Schema.Types.Number, required: true },
+		quantity: { type: Schema.Types.Number, required: true },
+		condition: { type: Schema.Types.String, enum: ["good", "fair", "damaged"], required: true },
+		mutationRemarks: { type: Schema.Types.String },
+		room: { type: Schema.Types.ObjectId, ref: "Room" },
+		image: { type: Schema.Types.String, required: true },
+		vehicle_details: {
+			type: VehicleDetailSchema,
+			required: function () {
+				return this.type === "vehicle";
+			},
 		},
+		createdBy: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+		updatedBy: { type: Schema.Types.ObjectId, ref: "Users", required: true },
 	},
-});
+	{ timestamps: true }
+);
 
 const InventoryModel = mongoose.model<Inventory>(INVENTORY_MODEL_NAME, InventorySchema);
 

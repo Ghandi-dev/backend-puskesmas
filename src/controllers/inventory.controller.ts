@@ -7,6 +7,9 @@ import { inventorySchema } from "../validations/inventory.validation";
 const create = async (req: IReqUser, res: Response) => {
 	try {
 		const inventory = req.body;
+		const userId = req.user?.id;
+		inventory.createdBy = userId;
+		inventory.updatedBy = userId;
 		await inventorySchema.validate(inventory);
 		const result = await InventoryModel.create(inventory);
 
@@ -76,6 +79,8 @@ const getAll = async (req: Request, res: Response) => {
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 })
+			.populate("createdBy", "fullname") // Hanya ambil field name dari User
+			.populate("updatedBy", "fullname") // Sama
 			.exec();
 
 		const count = await InventoryModel.countDocuments(query);
@@ -98,8 +103,11 @@ const getAll = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
 	try {
 		const id = req.params.id;
-		const result = await InventoryModel.findById(id);
+
+		const result = await InventoryModel.findById(id).populate("createdBy", "fullname").populate("updatedBy", "fullname"); // optional, jika ingin room juga tampilkan
+
 		if (!result) return response.notFound(res, "inventory not found");
+
 		response.success(res, result, "success get inventory");
 	} catch (error) {
 		response.error(res, error, "failed get inventory");
@@ -117,10 +125,12 @@ const remove = async (req: Request, res: Response) => {
 	}
 };
 
-const update = async (req: Request, res: Response) => {
+const update = async (req: IReqUser, res: Response) => {
 	try {
 		const id = req.params.id;
+		const userId = req.user?.id;
 		const inventory = req.body;
+		inventory.updatedBy = userId;
 		const result = await InventoryModel.findByIdAndUpdate(id, inventory, { new: true });
 		if (!result) return response.notFound(res, "inventory not found");
 		response.success(res, result, "success update inventory");

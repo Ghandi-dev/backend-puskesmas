@@ -16,7 +16,7 @@ const router = express.Router();
         }
      }
      */
-router.post("/auth/register", authController.register);
+router.post("/auth/register", [authMiddleware, aclMiddleware([ROLES.SUPERADMIN])], authController.register);
 
 /**
      #swagger.tags = ['Auth']
@@ -35,7 +35,7 @@ router.post("/auth/login", authController.login);
      "bearerAuth": [] 
      }]
      */
-router.get("/auth/me", authMiddleware, authController.me);
+router.get("/auth/me", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], authMiddleware, authController.me);
 
 /**
      #swagger.tags = ['Auth']
@@ -60,7 +60,7 @@ router.get("/auth/me", authMiddleware, authController.me);
         }
      }
      */
-router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.MEMBER])], authController.updateProfile);
+router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.ADMIN])], authController.updateProfile);
 
 /**
      #swagger.tags = ['Auth']
@@ -74,6 +74,6 @@ router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.MEMBER]
         }
      }
      */
-router.put("/auth/update-password", [authMiddleware, aclMiddleware([ROLES.MEMBER])], authController.updatePassword);
+router.put("/auth/update-password", [authMiddleware, aclMiddleware([ROLES.ADMIN])], authController.updatePassword);
 
 export default router;

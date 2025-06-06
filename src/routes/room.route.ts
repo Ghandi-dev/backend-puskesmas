@@ -1,12 +1,15 @@
 import express from "express";
 import * as roomController from "../controllers/room.controller";
+import authMiddleware from "../middlewares/auth.middleware";
+import { ROLES } from "../utils/constant";
+import aclMiddleware from "../middlewares/acl.middleware";
 
 const router = express.Router();
 
-router.post("/room", roomController.create);
-router.get("/rooms", roomController.getAll);
-router.get("/room/:id", roomController.getById);
-router.put("/room/:id", roomController.update);
-router.delete("/room/:id", roomController.remove);
+router.post("/room", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.create);
+router.get("/rooms", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.getAll);
+router.get("/room/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.getById);
+router.put("/room/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.update);
+router.delete("/room/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.remove);
 
 export default router;

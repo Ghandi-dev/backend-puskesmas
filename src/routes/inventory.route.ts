@@ -6,10 +6,10 @@ import { ROLES } from "../utils/constant";
 
 const router = express.Router();
 
-router.post("/inventory",[authMiddleware, aclMiddleware([ROLES.ADMIN])], inventoryController.create);
-router.get("/inventories", inventoryController.getAll);
-router.get("/inventory/:id", inventoryController.getById);
-router.delete("/inventory/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN])], inventoryController.remove);
-router.put("/inventory/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN])], inventoryController.update);
+router.post("/inventory", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], inventoryController.create);
+router.get("/inventories", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], inventoryController.getAll);
+router.get("/inventory/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], inventoryController.getById);
+router.delete("/inventory/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], inventoryController.remove);
+router.put("/inventory/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], inventoryController.update);
 
 export default router;

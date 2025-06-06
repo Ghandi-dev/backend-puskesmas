@@ -7,9 +7,12 @@ const ROOM_MODEL_NAME = "Rooms";
 const Schema = mongoose.Schema;
 
 // model room
-const RoomSchema = new Schema<Room>({
-	name: { type: Schema.Types.String, required: true },
-});
+const RoomSchema = new Schema<Room>(
+	{
+		name: { type: Schema.Types.String, required: true },
+	},
+	{ timestamps: true }
+);
 
 const RoomModel = mongoose.model<Room>(ROOM_MODEL_NAME, RoomSchema);
 

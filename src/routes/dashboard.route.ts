@@ -7,6 +7,6 @@ import { ROLES } from "../utils/constant";
 
 const router = express.Router();
 
-router.get("/dashboard", [authMiddleware, aclMiddleware([ROLES.ADMIN])], dasboardController.getDashboard);
+router.get("/dashboard", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], dasboardController.getDashboard);
 
 export default router;
