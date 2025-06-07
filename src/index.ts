@@ -12,6 +12,16 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
+// Tambahkan sebelum route API
+app.use((req, res, next) => {
+	if (req.method === "GET") {
+		res.setHeader("Cache-Control", "no-store");
+		res.setHeader("Pragma", "no-cache");
+		res.setHeader("Expires", "0");
+	}
+	next();
+});
+
 app.use("/api", router);
 
 app.get("/", (req, res) => {
