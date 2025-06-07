@@ -10,6 +10,8 @@ const Schema = mongoose.Schema;
 const RoomSchema = new Schema<Room>(
 	{
 		name: { type: Schema.Types.String, required: true },
+		createdBy: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+		updatedBy: { type: Schema.Types.ObjectId, ref: "Users", required: true },
 	},
 	{ timestamps: true }
 );

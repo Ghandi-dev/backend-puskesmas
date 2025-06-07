@@ -7,7 +7,7 @@ import aclMiddleware from "../middlewares/acl.middleware";
 const router = express.Router();
 
 router.post("/room", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.create);
-router.get("/rooms", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.getAll);
+router.get("/room", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.getAll);
 router.get("/room/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.getById);
 router.put("/room/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.update);
 router.delete("/room/:id", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], roomController.remove);

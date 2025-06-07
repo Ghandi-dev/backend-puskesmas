@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import UserModel from "../models/user.model";
 import { encrypt } from "../utils/encryption";
 import { generateToken } from "../utils/jwt";
-import { IReqUser } from "../utils/interface";
+import { IPaginationQuery, IReqUser } from "../utils/interface";
 import response from "../utils/response";
 import { userDTO, userLoginDTO, userUpdatePasswordDTO } from "../validations/user.validation";
 import { ROLES } from "../utils/constant";
@@ -100,11 +100,39 @@ const login = async (req: Request, res: Response) => {
 
 const getAll = async (req: IReqUser, res: Response) => {
 	try {
+		const { page = 1, limit = 10, search } = req.query as unknown as IPaginationQuery;
 		const userId = req.user?.id;
 
-		const result = await UserModel.find({ _id: { $ne: userId } }); // exclude current user
+		const query: any = {
+			_id: { $ne: userId }, // exclude current user
+		};
 
-		response.success(res, result, "success get all user");
+		if (search) {
+			query.$or = [
+				{ fullname: { $regex: search, $options: "i" } },
+				{ email: { $regex: search, $options: "i" } },
+				{ username: { $regex: search, $options: "i" } },
+			];
+		}
+
+		const result = await UserModel.find(query)
+			.limit(Number(limit))
+			.skip((Number(page) - 1) * Number(limit))
+			.sort({ createdAt: -1 })
+			.exec();
+
+		const count = await UserModel.countDocuments(query);
+
+		response.pagination(
+			res,
+			result,
+			{
+				total: count,
+				totalPages: Math.ceil(count / Number(limit)),
+				current: Number(page),
+			},
+			"success get all user"
+		);
 	} catch (error) {
 		response.error(res, error, "failed get all user");
 	}

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { Inventory } from "../validations/inventory.validation";
-import { timeStamp } from "console";
 
 const INVENTORY_MODEL_NAME = "Inventories";
 

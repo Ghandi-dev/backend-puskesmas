@@ -14,6 +14,7 @@ const validatePassword = yup
 		const regex = /^(?=.*\d)/;
 		return regex.test(value);
 	});
+	
 const validatePasswordConfirm = yup
 	.string()
 	.required()
