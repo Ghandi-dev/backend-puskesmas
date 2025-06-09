@@ -60,7 +60,7 @@ router.get("/auth/me", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERA
         }
      }
      */
-router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.ADMIN])], authController.updateProfile);
+router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], authController.updateProfile);
 
 /**
      #swagger.tags = ['Auth']
@@ -74,7 +74,7 @@ router.put("/auth/update-profile", [authMiddleware, aclMiddleware([ROLES.ADMIN])
         }
      }
      */
-router.put("/auth/update-password", [authMiddleware, aclMiddleware([ROLES.ADMIN])], authController.updatePassword);
+router.put("/auth/update-password", [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.SUPERADMIN])], authController.updatePassword);
 
 router.get("/auth/users", [authMiddleware, aclMiddleware([ROLES.SUPERADMIN])], authController.getAll);
 

@@ -10,8 +10,8 @@ import { ROLES } from "../utils/constant";
 const updateProfile = async (req: IReqUser, res: Response) => {
 	try {
 		const userId = req.user?.id;
-		const { fullname, profilePicture } = req.body;
-		const result = await UserModel.findByIdAndUpdate(userId, { fullname, profilePicture }, { new: true });
+		const { fullname, email, profilePicture } = req.body;
+		const result = await UserModel.findByIdAndUpdate(userId, { fullname, profilePicture, email }, { new: true });
 		if (!result) {
 			return response.notFound(res, "user not found");
 		}
@@ -24,8 +24,8 @@ const updateProfile = async (req: IReqUser, res: Response) => {
 const updatePassword = async (req: IReqUser, res: Response) => {
 	try {
 		const userId = req.user?.id;
-		const { oldPassword, password, confirmPassword } = req.body;
-		await userUpdatePasswordDTO.validate({ oldPassword, password, confirmPassword });
+		const { oldPassword, password, passwordConfirm } = req.body;
+		await userUpdatePasswordDTO.validate({ oldPassword, password, passwordConfirm });
 		const user = await UserModel.findById(userId);
 		if (!user || user.password !== encrypt(oldPassword)) {
 			return response.notFound(res, "user not found");
